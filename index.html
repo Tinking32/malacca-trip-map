@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>马六甲 4天3晚 · 南洋旧梦</title>
+<meta name="description" content="2025年7月31日—8月3日 · 新加坡⇄马六甲 · 希尔顿逸林+大华酒店">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --bg-primary:    #ffffff;
+  --bg-secondary:  #f5f5f7;
+  --bg-tertiary:   #fbfbfd;
+  --bg-grouped:    #f2f2f7;
+  --bg-elevated:   #ffffff;
+  --text-primary:   #1d1d1f;
+  --text-secondary: #86868b;
+  --text-tertiary:  #aeaeb2;
+  --accent:        #0071e3;
+  --accent-hover:  #0077ed;
+  --tint-red:    #ff3b30;
+  --tint-orange: #ff9500;
+  --tint-green:  #34c759;
+  --tint-blue:   #007aff;
+  --tint-purple: #af52de;
+  --tint-pink:   #ff2d55;
+  --separator:  rgba(60, 60, 67, .12);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 14px rgba(0,0,0,.08);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,.12);
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  20px;
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+               "Helvetica Neue", "Arial", sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.47059;
+  letter-spacing: -0.022em;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+#map { width: 100%; height: 40vh; min-height: 280px; position: sticky; top: 0; z-index: 100; }
+.locate-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(8px);
+  border: none; box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.locate-btn.active { color: #007aff; }
+@keyframes loc-pulse {
+  0%   { transform: scale(1); opacity: .55; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.loc-pulse {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: rgba(0,122,255,.25);
+  animation: loc-pulse 1.6s ease-out infinite;
+}
+
+.tabs {
+  display: flex; gap: 6px; padding: 12px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: rgba(255,255,255,.85); -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px); position: sticky; top: 40vh; z-index: 99;
+  border-bottom: .5px solid var(--separator); scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex-shrink: 0; padding: 7px 16px; border-radius: 980px; border: none;
+  background: var(--bg-grouped); color: var(--text-secondary);
+  font-size: 14px; font-weight: 500; cursor: pointer; transition: all .25s ease;
+  white-space: nowrap; letter-spacing: -0.01em;
+}
+.tab:active { transform: scale(.96); }
+.tab.active { background: var(--accent); color: #fff; }
+
+.content { max-width: 680px; margin: 0 auto; padding: 16px 16px calc(24px + var(--safe-bottom)); }
+
+.hero { text-align: center; padding: 28px 20px 20px; }
+.hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; }
+.hero .subtitle { font-size: 17px; color: var(--text-secondary); margin-top: 6px; font-weight: 400; }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.info-card { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-sm); }
+.info-card .label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .02em; margin-bottom: 6px; }
+.info-card .value { font-size: 15px; font-weight: 600; line-height: 1.4; }
+
+.section-head { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .03em; padding: 20px 0 8px; }
+
+.day-head { padding: 20px 0 12px; }
+.day-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+.day-head p { font-size: 15px; color: var(--text-secondary); margin-top: 2px; }
+
+.route-bar { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 14px; box-shadow: var(--shadow-sm); font-size: 13px; color: var(--text-secondary); line-height: 1.7; white-space: pre-line; }
+.route-bar strong { color: var(--text-primary); }
+
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 20px; bottom: 20px; width: 1.5px; background: var(--separator); }
+.tl-item { position: relative; margin-bottom: 10px; }
+.tl-dot { position: absolute; left: -20px; top: 18px; width: 10px; height: 10px; border-radius: 50%; z-index: 1; box-shadow: 0 0 0 3px var(--bg-secondary); }
+.tl-dot.food    { background: var(--tint-red); }
+.tl-dot.spot    { background: var(--tint-blue); }
+.tl-dot.hotel   { background: var(--tint-orange); }
+.tl-dot.drink   { background: var(--tint-purple); }
+.tl-dot.transport { background: var(--text-tertiary); }
+
+.card { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow-sm); transition: box-shadow .25s ease; cursor: pointer; }
+.card:active { box-shadow: var(--shadow-md); }
+.card .time { font-size: 12px; font-weight: 600; color: var(--text-tertiary); letter-spacing: .01em; }
+.card .name { font-size: 17px; font-weight: 600; margin: 2px 0 4px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 6px; }
+.card .desc { font-size: 14px; color: var(--text-secondary); line-height: 1.45; }
+
+.badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 4px; }
+.badge.food   { background: rgba(255,59,48,.1);  color: var(--tint-red); }
+.badge.spot   { background: rgba(0,122,255,.1);  color: var(--tint-blue); }
+.badge.drink  { background: rgba(175,82,222,.1); color: var(--tint-purple); }
+
+.budget { display: inline-block; margin-top: 6px; padding: 3px 10px; background: var(--bg-grouped); border-radius: var(--radius-sm); font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+
+.pays { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.pay { font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+.pay.ok  { background: rgba(52,199,89,.1);  color: var(--tint-green); }
+.pay.no  { background: rgba(255,59,48,.08); color: var(--tint-red); }
+.pay.idk { background: rgba(255,149,0,.1);  color: var(--tint-orange); }
+
+.links { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+  text-decoration: none !important; transition: filter .2s;
+}
+.btn:active { filter: brightness(.9); }
+.btn.nav    { background: var(--accent); color: #fff; }
+.btn.xhs    { background: #ff2442; color: #fff; }
+.btn.dp     { background: #ffa700; color: #fff; }
+.btn.rsv    { background: var(--tint-green); color: #fff; }
+
+.as-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,.35); backdrop-filter: blur(2px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.as-overlay.show { opacity: 1; pointer-events: auto; }
+.as-sheet {
+  width: 100%; max-width: 420px;
+  padding: 0 8px 34px;
+  transform: translateY(100%); transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.as-overlay.show .as-sheet { transform: translateY(0); }
+.as-group {
+  background: rgba(255,255,255,.88); backdrop-filter: blur(20px);
+  border-radius: 14px; overflow: hidden; margin-bottom: 8px;
+}
+.as-group .as-item {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px; font-size: 18px; color: #007aff; font-weight: 500;
+  border: none; background: none; width: 100%; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.as-group .as-item + .as-item { border-top: .5px solid rgba(0,0,0,.12); }
+.as-group .as-item:active { background: rgba(0,0,0,.06); }
+.as-cancel { font-weight: 600; }
+
+.details {
+  margin-top: 10px; padding-top: 10px;
+  border-top: .5px solid var(--separator);
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+}
+.details.closed { display: none; }
+
+.day-list .card { margin-bottom: 8px; }
+.day-list .card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+.pay-summary { background: var(--bg-elevated); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow-sm); font-size: 13px; line-height: 1.7; margin-bottom: 10px; }
+.pay-summary h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.pay-summary .warn { color: var(--tint-red); }
+.pay-summary .ok-text { color: var(--tint-green); }
+
+.legend { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 0; font-size: 12px; color: var(--text-secondary); }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.leaflet-popup-content-wrapper { border-radius: var(--radius-md) !important; box-shadow: var(--shadow-lg) !important; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif !important; }
+.leaflet-popup-content { font-size: 14px !important; line-height: 1.5 !important; margin: 12px 14px !important; }
+.leaflet-popup-content a { color: var(--accent) !important; }
+.leaflet-popup-tip { background: #fff !important; }
+.leaflet-control-zoom a { width: 34px !important; height: 34px !important; line-height: 34px !important; font-size: 16px !important; border-radius: 10px !important; background: rgba(255,255,255,.85) !important; -webkit-backdrop-filter: blur(10px) !important; backdrop-filter: blur(10px) !important; border: .5px solid var(--separator) !important; color: var(--text-primary) !important; }
+.leaflet-control-zoom { border-radius: 12px !important; overflow: hidden; box-shadow: var(--shadow-md) !important; border: none !important; }
+.leaflet-control-attribution { font-size: 9px !important; opacity: .5; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<div class="tabs" id="tabs"></div>
+<div class="content" id="content"></div>
+
+<script>
+const HOTEL = { name: '希尔顿逸林酒店 (DoubleTree by Hilton Melaka)', lat: 2.1894, lng: 102.2560 };
+
+const DAYS = [
+  { id: 0, label: '总览', color: '#0071e3', locations: [] },
+  {
+    id: 1, label: 'D1', date: '7/31 周四', title: '抵达 · 红屋区',
+    color: '#ff9500',
+    locations: [
+      { name: '🚌 新加坡→马六甲', lat: 1.2820, lng: 103.8440, type: 'transport', time: '08:30', desc: '大巴出发，约4.5小时', detail: '从新加坡出发，预计下午1点左右到达马六甲汽车站（Melaka Sentral）', gmap: 'Singapore+to+Melaka+bus' },
+      { name: '希尔顿逸林酒店 Check-in', lat: 2.1894, lng: 102.2560, type: 'hotel', time: '13:00', desc: '入住两晚，放下行李稍作休整', detail: 'DoubleTree by Hilton Melaka\n位于马六甲南区，近海岸线。设施现代，有泳池和健身房。距离红屋区约10分钟车程。', gmap: 'DoubleTree+by+Hilton+Melaka' },
+      { name: '🍽️ 麦哥娘惹餐馆 Nyonya Makko', lat: 2.1874, lng: 102.2515, type: 'food', time: '13:30', desc: '酒店步行8分钟！马六甲风味榜No.5 · 正宗娘惹菜', budget: '人均 RM50-60', detail: '📍 距希尔顿仅645m，走路8分钟\n⭐ Google 5.0 · 马六甲当地风味榜No.5\n\n👍 不用预约，到了就吃！\n👍 正宗娘惹风味，品质口碑不输Nancy\'s\n👍 到了马上能填饱肚子再开始下午行程\n\n🏆 推荐：娘惹小金杯、黄梨虾、仁当鸡', pay: { cash: 1, card: 1 }, gmap: 'Restoran+Nyonya+Makko+Melaka', xhsKeyword: '马六甲 麦哥娘惹 Nyonya Makko' },
+      { name: '荷兰红屋 Stadthuys', lat: 2.1940, lng: 102.2489, type: 'spot', time: '14:45', desc: '马六甲地标，荷兰殖民时期市政厅，鲜艳的赭红色外墙', detail: '建于1650年，是东南亚最古老的荷兰建筑。现为历史博物馆。\n\n📸 最佳拍照点在对面红场广场，上午顺光，下午可拍剪影。\n🎫 门票约RM10', gmap: 'Stadthuys+Melaka', xhsKeyword: '马六甲荷兰红屋 拍照' },
+      { name: '维多利亚女皇喷泉', lat: 2.1941, lng: 102.2491, type: 'spot', time: '15:00', desc: '英殖民时期的纪念喷泉，就在红屋正前方', detail: '1904年建成，纪念维多利亚女王登基60周年。红场的地标性点缀。', gmap: 'Queen+Victoria+Fountain+Melaka' },
+      { name: '圣保罗山教堂 St. Paul\'s Church', lat: 2.1927, lng: 102.2494, type: 'spot', time: '15:30', desc: '山顶遗迹教堂，俯瞰马六甲海峡全景', detail: '建于1521年的葡萄牙教堂遗址，圣方济各·沙勿略曾在此传教。\n\n⛰️ 需爬一小段台阶上山，约10分钟。\n🌅 黄昏时分可看海峡日落，超美！', gmap: 'St+Pauls+Church+Melaka', xhsKeyword: '马六甲圣保罗山 日落' },
+      { name: '圣地亚哥古城门 Porta de Santiago', lat: 2.1918, lng: 102.2503, type: 'spot', time: '16:30', desc: '葡萄牙堡垒唯一遗迹，500年前的城墙', detail: 'A\'Famosa 堡垒建于1511年，是东南亚最古老的欧洲建筑遗迹。现在只剩这座城门，但依然壮观。', gmap: 'A+Famosa+Melaka', xhsKeyword: '马六甲古城门 拍照' },
+      { name: '马六甲河畔散步', lat: 2.1980, lng: 102.2490, type: 'spot', time: '17:30', desc: '沿河彩色壁画墙，傍晚光影最美', detail: '马六甲河两岸有大量街头艺术壁画和咖啡馆。黄昏时分灯光渐起，非常浪漫。\n\n🚤 河上游船 ⭐TripAdvisor 4.7：\n- 票价 RM25-30/人\n- 夜游尤其推荐，灯光+壁画+音乐\n- 码头在红屋附近，现场买票即可\n- 全程约45分钟', gmap: 'Malacca+River+Cruise', xhsKeyword: '马六甲河游船 夜景' },
+      { name: '🔥 McQuek\'s Satay Celup 沙爹火锅', lat: 2.1898, lng: 102.2540, type: 'food', time: '19:00', desc: '95年老字号沙爹火锅！花生酱浓郁，不用预约', budget: '人均 RM20-35', detail: '🔥 马六甲当地人最推的沙爹火锅！\n⚠️ 周三休息，周四正常营业\n\n👍 花生碎超多，越滚越浓，店员帮搅锅防焦\n👍 推荐：培根、血蛤Siham、无壳虾、烤面包蘸酱\n👍 建议要独立酱料锅（RM26.90/锅，不共锅）\n💡 19:00到刚好，日落(19:23)后去吃\n\n🕐 16:00-23:00', pay: { cash: 1, card: 1 }, gmap: 'McQuek+Satay+Celup+Melaka', xhsKeyword: '马六甲 McQuek 沙爹火锅 必吃' },
+      { name: 'Muse Bar', lat: 2.1970, lng: 102.2468, type: 'drink', time: '—', desc: '鸡场街附近的精酿酒吧，氛围很好', budget: '人均 RM30-50', detail: '备选项目：如果第一天不累，可以来喝一杯。鸡场街区域少有的精酿酒吧。', gmap: 'Muse+Bar+Melaka+Jonker' },
+    ]
+  },
+  {
+    id: 2, label: 'D2', date: '8/1 周五', title: '文化深度 · 周五夜市',
+    color: '#ff3b30',
+    locations: [
+      { name: '中华茶室 海南鸡饭粒', lat: 2.1964, lng: 102.2480, type: 'food', time: '09:00', desc: '鸡场街最老字号！鸡汤煮饭粒+白切鸡', budget: '人均 RM15-25', detail: '⚠️ 必须10点前到！售完即止！\n⚠️ 仅周四-六营业（周五刚好开门）\n\n📍 鸡场街入口，三叔公对面\n👍 鸡饭粒用鸡汤煮熟，粒粒饱满\n👎 有人觉得鸡肉偏柴，但历史地位无可替代\n🕐 约9:30开门，11点卖完', pay: { cash: 1, alipay: 0.5 }, gmap: 'Chung+Wah+Chicken+Rice+Ball+Melaka', xhsKeyword: '马六甲中华茶室 鸡饭粒' },
+      { name: '青云亭 Cheng Hoon Teng', lat: 2.1975, lng: 102.2471, type: 'spot', time: '10:00', desc: '马来西亚最古老华人庙宇，1645年建', detail: '供奉观音，是马六甲华人信仰中心。建筑融合了闽南、佛教和儒家元素，雕梁画栋非常精美。\n\n🎫 免费参观\n🕐 7:00-19:00', gmap: 'Cheng+Hoon+Teng+Temple+Melaka', xhsKeyword: '马六甲青云亭' },
+      { name: 'Baba Nyonya 娘惹博物馆', lat: 2.1959, lng: 102.2464, type: 'spot', time: '11:00', desc: '百年娘惹豪宅，了解峇峇娘惹文化的窗口', detail: '曾是富豪郑氏家族的私宅，展示了19世纪峇峇娘惹的奢华生活。家具、瓷器、服饰都极其精美。\n\n🎫 门票约RM18\n🕐 10:00-17:00（周一休息，不影响）', pay: { cash: 1, card: 1 }, gmap: 'Baba+Nyonya+Heritage+Museum+Melaka', xhsKeyword: '马六甲娘惹博物馆 必去' },
+      { name: 'Jonker 88 Laksa', lat: 2.1973, lng: 102.2466, type: 'food', time: '12:30', desc: '亚参叻沙酸辣开胃，Kahwin Laksa是招牌', budget: '人均 RM12-18', detail: '⚠️ chendol 品质下滑严重，别点！只吃laksa就好\n\n👍 Nyonya Asam Laksa偏酸，Kahwin Laksa层次丰富\n👍 加炸腐竹是灵魂！\n👎 排队久、环境拥挤、服务一般\n🕐 9:30-18:00（周五六到19:30）', pay: { cash: 1 }, gmap: 'Jonker+88+Melaka', xhsKeyword: '马六甲 Jonker 88 laksa' },
+      { name: 'Taste Better 榴莲泡芙', lat: 2.1969, lng: 102.2472, type: 'food', time: '13:30', desc: '一口爆浆的榴莲泡芙，就在Jonker 88斜对面', budget: 'RM5-8/盒', detail: '新鲜出炉的泡芙皮，内馅是冰冰凉凉的榴莲奶油。一口一个，榴莲控必试！\n\n🕐 10:00-18:00', pay: { cash: 1, alipay: 0.5 }, gmap: 'Taste+Better+Durian+Puff+Melaka' },
+      { name: '海事博物馆 Flor de la Mar', lat: 2.1915, lng: 102.2463, type: 'spot', time: '14:30', desc: '葡萄牙沉船1:1复原，巨型木质帆船', detail: '复刻了1512年沉没的葡萄牙大帆船"海上花号"(Flor de la Mar)。内部是海事历史展览。\n\n🎫 门票约RM10\n🕐 9:00-17:30', gmap: 'Maritime+Museum+Melaka', xhsKeyword: '马六甲海事博物馆' },
+      { name: '苏丹皇宫博物馆', lat: 2.1926, lng: 102.2502, type: 'spot', time: '15:30', desc: '马六甲苏丹王朝皇宫复原，全木结构', detail: '按15世纪马六甲苏丹皇宫原貌重建，全木榫卯结构无一颗钉子。展示了苏丹王朝的宫廷生活和文化。\n\n🎫 门票约RM10\n🕐 9:00-17:30', gmap: 'Sultanate+Palace+Melaka', xhsKeyword: '马六甲苏丹皇宫' },
+      { name: '旋转塔 Menara Taming Sari', lat: 2.1902, lng: 102.2543, type: 'spot', time: '18:30', desc: '110米高空360°旋转俯瞰，日落19:23，黄金时段绝美', detail: '马来西亚首个旋转观光塔，上升到110米高空并缓慢旋转。\n\n🌅 日落 19:23，18:30 上去正好赶上 golden hour！\n🎫 门票约RM23，现场买\n🕐 10:00-22:00\n\n⚠️ 雨天可能暂停运营，如遇下午雷阵雨可灵活调整到雨停后', pay: { card: 1, cash: 1 }, gmap: 'Menara+Taming+Sari+Melaka', xhsKeyword: '马六甲旋转塔 日落 黄昏' },
+      { name: '🎪 周五鸡场街夜市 + 晚餐', lat: 2.1975, lng: 102.2470, type: 'spot', time: '18:00', desc: '🌙 夜市小吃自由扫荡！晚餐就在夜市解决', detail: 'Jonker Street Night Market 只在周五、周六、周日开放。\n\n周五规模比周六小，游客少一些，逛起来更舒服。\n\n🍢 夜市必吃清单（边走边吃就是晚餐）：\n- 榴莲泡芙\n- 椰糖珍多冰\n- 烤鱿鱼/烤串\n- 鸡饭粒串\n- 各式娘惹糕点\n- Putu Piring 椰丝米糕\n\n💡 McQuek\'s 沙爹火锅已安排在Day 1，今天轻松逛吃！', gmap: 'Jonker+Street+Night+Market+Melaka', xhsKeyword: '马六甲鸡场街夜市 小吃' },
+    ]
+  },
+  {
+    id: 3, label: 'D3', date: '8/2 周六', title: '清真寺 · 夜市巅峰',
+    color: '#af52de',
+    locations: [
+      { name: '🏨 换酒店：大华酒店 Check-in', lat: 2.2013, lng: 102.2505, type: 'hotel', time: '09:00', desc: '入住1929年娘惹老宅改造的SLH精品酒店', detail: 'The Majestic Malacca\n📍 188, Jalan Bunga Raya\n\n✨ 亮点：\n- 1929年娘惹豪宅改造，南洋复古风\n- 每个角落都像电影场景，出片率极高\n- 图书馆/英式酒吧仅限住客\n- 早餐Laksa Malacca必试！\n\n⚠️ 老建筑隔音一般，但体验是无价的', pay: { card: 1, cash: 1 }, gmap: 'The+Majestic+Malacca', xhsKeyword: '马六甲大华酒店 娘惹' },
+      { name: '圣方济各教堂', lat: 2.1942, lng: 102.2498, type: 'spot', time: '10:30', desc: '哥特式双塔教堂，路过拍两张', detail: '建于1849年，纪念圣方济各·沙勿略。白色双塔是马六甲天际线的一部分。离红屋步行3分钟。', gmap: 'St+Francis+Xavier+Church+Melaka' },
+      { name: '🕌 马六甲海峡清真寺', lat: 2.1790, lng: 102.2495, type: 'spot', time: '11:00', desc: '建在海上的清真寺，涨潮时像漂浮在海上', detail: 'Masjid Selat Melaka\n\n🚗 从大华酒店Grab约15分钟(RM10-15)\n\n✨ 超好拍：金色穹顶+海上倒影！\n👗 需穿长袍（门口免费借）\n🕐 建议上午去，人少不热\n🌅 日落也超美但人会多', gmap: 'Melaka+Strait+Mosque', xhsKeyword: '马六甲海峡清真寺 拍照 攻略' },
+      { name: 'Klebang Original Coconut Shake', lat: 2.2180, lng: 102.2000, type: 'drink', time: '12:00', desc: '🥥 真材实料椰子冰沙+香草冰淇淋', budget: 'RM5-6/杯', detail: '⚠️ 顺路喝一杯解暑不错，特地去排长队就不太值\n\n👍 Special款（加香草冰淇淋）最好喝\n👍 每一口都能嚼到椰肉碎\n👎 有人觉得overrated，期望别拉太高\n🕐 11:00-18:30（周五14:30开门）\n\n📍 Klebang，清真寺回市区顺路', pay: { cash: 1 }, gmap: 'Klebang+Original+Coconut+Shake', xhsKeyword: '马六甲 Klebang coconut shake' },
+      { name: 'Sin See Tai 新兴泰咖啡店', lat: 2.1972, lng: 102.2473, type: 'food', time: '13:00', desc: '73年老字号咖啡店，地道南洋早餐', budget: '人均 RM10-15', detail: '位于鸡场街区域，73年历史的传统咖啡店。\n\n☕ 推荐：Kopi O 黑咖啡 + 半熟蛋 + 烤面包\n🍞 经典的南洋早餐组合\n\n🕐 约7:00-16:00', pay: { cash: 1 }, gmap: 'Sin+See+Tai+Melaka' },
+      { name: '大华酒店休憩 & 拍照', lat: 2.2013, lng: 102.2505, type: 'spot', time: '14:00', desc: '酒店就是景点：图书馆、酒吧、河景房', detail: '换上娘惹风格的服装（如果有的话），在酒店里慢慢逛慢慢拍。大堂、旋转楼梯、图书馆、河畔都是绝佳取景地。', gmap: 'The+Majestic+Malacca+hotel' },
+      { name: 'Nadeje 千层蛋糕 🍰', lat: 2.1898, lng: 102.2530, type: 'food', time: '15:30', desc: '小红书"比Lady M好吃"的千层蛋糕天花板', budget: 'RM16-22/片', detail: '📍 Plaza Mahkota总店（离大华步行10分钟）\n\n🏆 必点：原味千层（Original）！\n👍 Premium Melaka（椰糖味）最具地方特色\n👍 抹茶、提拉米苏也极好\n⚠️ 周末原味常很快售罄，早点去\n\n🕐 11:00-22:00\n💡 品牌故事：日本籍创办人2006年创立，"Nadeje"在捷克文中意为"希望"', pay: { card: 1, cash: 1, alipay: 0.5 }, gmap: 'Nadeje+Plaza+Mahkota+Melaka', xhsKeyword: '马六甲 Nadeje 千层蛋糕 原味' },
+      { name: 'Eight Treasures 八宝猪肚炉', lat: 2.1995, lng: 102.2520, type: 'food', time: '18:00', desc: '胡椒猪肚汤火锅，暖胃正餐', budget: '人均 RM25-40', detail: '周六晚餐先来一顿正经火锅，吃饱再去夜市！\n\n马六甲特色胡椒猪肚汤底，配猪肚、猪肉等。汤头鲜美暖胃。\n\n💡 策略：18:00吃正餐 → 19:30去夜市纯逛甜点+拍照，不用饿着肚子排队。', pay: { cash: 1, card: 0.5 }, gmap: 'Eight+Treasures+Restaurant+Melaka' },
+      { name: '🎪 周六夜市 · 甜品巡礼', lat: 2.1975, lng: 102.2470, type: 'spot', time: '19:30', desc: '🔥 全周最热闹！吃饱正餐来逛甜点 + 拍照 + 氛围', detail: '周六的夜市规模最大、摊位最全、气氛最嗨！\n\n🍰 甜品巡礼清单（已经吃过正餐，专注甜点和小吃）：\n- Cromboloni 千层可颂卷 ⭐\n- 榴莲泡芙\n- 鸡蛋冰淇淋（拍照！）\n- 龙珠果酸奶果汁\n- 传统 MuaChi 麻糬\n- 糖葫芦 Jelly版\n- Cendol 煎蕊冰\n\n💡 策略：先从头到尾逛一遍感受气氛，再回头买', gmap: 'Jonker+Street+Night+Market', xhsKeyword: '马六甲周六夜市 甜品 必吃' },
+      { name: '大华酒店图书馆酒吧', lat: 2.2013, lng: 102.2505, type: 'drink', time: '—', desc: '仅对住客开放的英式图书馆酒吧，安静私密', budget: '人均 RM30-50', detail: '备选：夜市逛累了回酒店，在图书馆酒吧喝一杯。殖民时期风格的装潢，只有住客才能进入，非常安静。', gmap: 'The+Majestic+Malacca+bar' },
+    ]
+  },
+  {
+    id: 4, label: 'D4', date: '8/3 周日', title: '收尾 · 返程',
+    color: '#34c759',
+    locations: [
+      { name: '大华酒店早餐', lat: 2.2013, lng: 102.2505, type: 'food', time: '09:00', desc: '单点制娘惹早餐，Laksa Malacca必试', detail: '非自助，单点制，出品精致。\n\n🍜 必点：\n- Laksa Malacca（椰香浓郁）\n- 葡式烤蛋 Obu Cozido Portugis\n- 娘惹风味煎蛋\n\n悠闲享受最后一个早晨。', pay: { card: 1 }, gmap: 'The+Majestic+Malacca+breakfast' },
+      { name: 'Putu Piring 椰丝米糕', lat: 2.2030, lng: 102.2440, type: 'food', time: '11:00', desc: '现蒸米糕+椰糖+椰丝，马六甲传统甜点', budget: 'RM2-3/个', detail: '用米粉蒸制的小糕点，中间夹着融化的椰糖(Gula Melaka)，外面裹着新鲜椰丝。热吃最佳！\n\n📍 Tengkera区（离大华不远）\n🕐 约10:00开始营业，售完即止', pay: { cash: 1 }, gmap: 'Putu+Piring+Melaka', xhsKeyword: '马六甲 Putu Piring 必吃' },
+      { name: '自由午餐 · 补吃错过的美食', lat: 2.1975, lng: 102.2470, type: 'food', time: '12:00', desc: '最后机会：Jonker 88 laksa / 中华茶室鸡饭 / 其他', budget: '人均 RM15-30', detail: '最后一天，补吃前两天没吃到的！\n\n选项：\n- 还想去中华茶室？（周日可能休息）\n- Jonker 88 laksa（再吃一次）\n- 鸡场街随便找一家\n- 或者带点娘惹糕点伴手礼', pay: { cash: 1 }, gmap: 'Jonker+Street+Melaka+lunch' },
+      { name: '🚌 马六甲→新加坡', lat: 2.2210, lng: 102.2507, type: 'transport', time: '15:00', desc: 'Melaka Sentral 大巴回新加坡，约4.5小时', detail: '📍 Melaka Sentral 巴士总站\n🚗 从大华酒店Grab约10分钟\n\n建议14:30出发前往车站，预留充裕时间。\n预计晚上7:30-8:00抵达新加坡。', gmap: 'Melaka+Sentral+bus+terminal' },
+    ]
+  }
+];
+
+function overviewContent() {
+  return `
+<div class="hero"><h1>马六甲 4天3晚 · 南洋旧梦</h1><p class="subtitle">2025年7月31日—8月3日 · 新加坡 ⇄ 马六甲</p></div>
+<div class="info-grid">
+  <div class="info-card"><div class="label">酒店</div><div class="value">希尔顿逸林 (2晚)<br>大华酒店 (1晚)</div></div>
+  <div class="info-card"><div class="label">交通</div><div class="value">🚌 大巴往返<br>新加坡⇄马六甲</div></div>
+  <div class="info-card"><div class="label">市内出行</div><div class="value">🚗 Grab打车<br>🚶 古城步行</div></div>
+  <div class="info-card"><div class="label">预算参考</div><div class="value">RM300-500/人<br>不含酒店</div></div>
+</div>
+<div class="section-head">行程概览</div>
+<div class="day-list">${DAYS.slice(1).map(d=>`<div class="card" onclick="go(${d.id})"><div class="name"><span class="dot" style="background:${d.color}"></span>${d.label} · ${d.title}</div><div class="desc">${d.date}</div></div>`).join('')}</div>
+<div class="section-head">⚠️ 支付提醒</div>
+<div class="pay-summary"><h4>💡 马六甲支付须知</h4>
+<span class="warn">⚠️ 大部分小吃摊和传统老店只收现金</span>，请备足马币(RM)<br>
+<span class="ok-text">✅ 商场、酒店、连锁店可刷卡</span><br>
+<span class="ok-text">✅ 部分网红店支持支付宝</span>（Nadeje、麦哥娘惹等）<br>
+建议在出发前换 RM500-800 现金，或在马六甲 ATM 取款
+</div>
+<div class="section-head">🌧️ 天气提醒</div>
+<div class="pay-summary">
+<h4>每天下午大概率雷阵雨 ⚡</h4>
+<span class="warn">🌧️ 7/31 降雨概率 87%</span> — 体感40°C，午后雷阵雨<br>
+<span class="warn">🌧️ 8/1 降雨概率 99%</span> — 全时段阵雨+雷暴<br>
+<span class="warn">🌧️ 8/2 降雨概率 59%</span> — 相对最好的一天<br>
+<span class="warn">⛈️ 8/3 降雨概率 99%</span> — 最湿一天，好在以室内为主<br>
+<br>💡 <b>策略</b>：户外景点排上午，博物馆排下午避雨<br>
+💡 带伞+穿凉鞋，夜市摊位有雨棚不影响逛吃<br>
+💡 旋转塔遇雷雨可能暂停，灵活调整
+</div>
+<div class="section-head">🎯 关键提醒</div>
+<div class="pay-summary">
+<h4>📋 提前准备清单</h4>
+✅ 中华茶室鸡饭 — <b>9:00前到</b>，售完即止（仅周四-六营业）<br>
+✅ McQuek's Satay Celup — Day 1晚餐，<b>19:00前到</b>避开高峰<br>
+✅ 海峡清真寺 — <b>穿长裤/长裙</b>，门口有免费长袍<br>
+✅ 旋转塔 — 日落19:23，<b>18:30上去</b>看golden hour<br>
+✅ Grab app — 清真寺、Klebang需打车<br>
+✅ 带🌂 + 凉鞋 — 每天下午都可能下雨<br>
+✅ 周六夜市 — 吃饱正餐再去逛甜品
+</div>
+<div class="section-head">🍽️ 小红书美食推荐 Top 5</div>
+<div class="day-list">
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥇 McQuek's Satay Celup</div><div class="desc">95年老字号 · 花生酱浓郁绝了 · 4pm开门就去</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥈 Nadeje 千层蛋糕</div><div class="desc">比Lady M好吃 · 原味必点 · 下午茶首选</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥉 中华茶室海南鸡饭粒</div><div class="desc">马六甲第一站 · 鸡汤煮饭粒 · 10点前到</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>④ 麦哥娘惹餐馆 Nyonya Makko</div><div class="desc">到埠第一餐 · 酒店步行8分钟 · 5.0评分娘惹菜</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>⑤ Klebang Coconut Shake</div><div class="desc">真材实料椰子冰沙 · 顺路必喝 · RM5解暑</div></div>
+</div>
+<div class="section-head">图例</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tint-red)"></div>餐厅</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tint-blue)"></div>景点</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tint-purple)"></div>饮品</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tint-orange)"></div>酒店</div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════
+// ENGINE
+// ═══════════════════════════════════════════════
+
+const map = L.map('map', { center: [HOTEL.lat || 2.195, HOTEL.lng || 102.249], zoom: 14, zoomControl: false, attributionControl: true });
+L.control.zoom({ position: 'topright' }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+
+const LocateControl = L.Control.extend({
+  options: { position: 'bottomright' },
+  onAdd() {
+    const btn = L.DomUtil.create('button', 'locate-btn');
+    btn.innerHTML = '📍';
+    btn.title = '我的位置';
+    L.DomEvent.disableClickPropagation(btn);
+    btn.addEventListener('click', () => {
+      btn.classList.add('active');
+      map.locate({ setView: true, maxZoom: 15 });
+    });
+    this._btn = btn;
+    return btn;
+  }
+});
+new LocateControl().addTo(map);
+let locMarker, locCircle;
+map.on('locationfound', e => {
+  const r = e.accuracy / 2;
+  if (locMarker) { locMarker.setLatLng(e.latlng); locCircle.setLatLng(e.latlng).setRadius(r); }
+  else {
+    locMarker = L.marker(e.latlng, {
+      icon: L.divIcon({ className:'', html:'<div style="width:14px;height:14px;border-radius:50%;background:#007aff;border:2.5px solid #fff;box-shadow:0 0 6px rgba(0,122,255,.5)"></div><div class="loc-pulse" style="position:absolute;top:0;left:0"></div>', iconSize:[14,14], iconAnchor:[7,7] }),
+      zIndexOffset: 2000
+    }).addTo(map);
+    locCircle = L.circle(e.latlng, { radius: r, color: '#007aff', fillColor: '#007aff', fillOpacity: .08, weight: 1 }).addTo(map);
+  }
+});
+map.on('locationerror', () => {});
+
+function icon(color, emoji) {
+  return L.divIcon({ className: '', html: `<div style="width:28px;height:28px;border-radius:50%;background:${color};border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.18)">${emoji||''}</div>`, iconSize: [28,28], iconAnchor: [14,14], popupAnchor: [0,-16] });
+}
+
+if (HOTEL.lat) L.marker([HOTEL.lat, HOTEL.lng], { icon: icon('#ff9500','🏨'), zIndexOffset: 1000 }).addTo(map).bindPopup(`<b>${HOTEL.name}</b>`);
+
+let markers = [], polylines = [];
+const emojis = { food:'🍽️', spot:'📍', hotel:'🏨', transport:'🚃', drink:'🍺' };
+
+function clearMap() { markers.forEach(m=>map.removeLayer(m)); polylines.forEach(p=>map.removeLayer(p)); markers=[]; polylines=[]; }
+
+function showDay(idx) {
+  clearMap();
+  if (idx === 0) {
+    const pts = [];
+    DAYS.forEach(d => d.locations.forEach(l => { if(l.lat) pts.push([l.lat,l.lng]); }));
+    if(pts.length) map.fitBounds(pts, {padding:[30,30]});
+    DAYS.slice(1).forEach(d => {
+      d.locations.filter(l=>l.time!=='—').forEach(l => {
+        const m = L.circleMarker([l.lat,l.lng], { radius:4, fillColor:d.color, color:'#fff', weight:1.5, fillOpacity:.9 }).addTo(map).bindPopup(`<b>${l.name}</b><br><span style="color:#86868b">${d.label}</span>`);
+        markers.push(m);
+      });
+    });
+    return;
+  }
+  const day = DAYS.find(d=>d.id===idx);
+  if(!day) return;
+  const coords = [];
+  day.locations.forEach(l => {
+    if(!l.lat) return;
+    const m = L.marker([l.lat,l.lng], { icon: icon(day.color, emojis[l.type]||'📌') }).addTo(map);
+    const gmapQ = l.gmap||encodeURIComponent(l.name+' Melaka');
+    m.bindPopup(`<b>${l.name}</b>${l.time!=='—'?'<br><span style="color:#86868b">'+l.time+'</span>':''}<br>${l.desc}${l.budget?'<br><span style="color:#ff9500">'+l.budget+'</span>':''}<br><a href="#" onclick="event.preventDefault();openAS('${l.name.replace(/'/g,"\\'")}',${l.lat},${l.lng},'${gmapQ}')">📍 导航</a>${l.xhs||l.xhsKeyword?' · <a href="#" onclick="event.preventDefault();openXhs(\''+idx+'::'+l.name.replace(/'/g,"\\'")+'\')">📕 小红书</a>':''}`);
+    markers.push(m);
+    if(l.time!=='—') coords.push([l.lat,l.lng]);
+  });
+  if(coords.length>1) { const pl = L.polyline(coords, { color:day.color, weight:2.5, opacity:.5, dashArray:'6,5' }).addTo(map); polylines.push(pl); }
+  if(coords.length) map.fitBounds(coords, { padding:[40,40], maxZoom:14 });
+}
+
+function payChips(pay) {
+  if(!pay) return '';
+  let h = '<div class="pays">';
+  const m = { cash:'💴 现金', card:'💳 刷卡', alipay:'支付宝', wechat:'微信' };
+  for(const [k,label] of Object.entries(m)) {
+    if(pay[k]!==undefined) { const c = pay[k]===1?'ok':pay[k]===0.5?'idk':'no'; h += `<span class="pay ${c}">${label}</span>`; }
+  }
+  return h+'</div>';
+}
+
+const IN_APP_WEBVIEW = (() => {
+  const ua = (navigator.userAgent || '').toLowerCase();
+  return /micromessenger|xhs|xhsdiscover|discover\/|tiktok|aweme|weibo|qq\/|qqbrowser|alipayclient|dingtalk|lark|feishu|ucbrowser|baiduboxapp|toutiao|newsarticle/.test(ua);
+})();
+
+function xhsKeyword(loc) {
+  if(loc.xhsKeyword) return loc.xhsKeyword.trim();
+  return (loc.name||'').replace(/⭐.*$/g,'').replace(/（.*?）/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
+}
+function xhsAppUrl(loc) { return `xhsdiscover://search/result?keyword=${encodeURIComponent(xhsKeyword(loc))}&target_search=notes&source=deeplink`; }
+function xhsWebUrl(loc) { return `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(xhsKeyword(loc))}&source=web_explore_feed`; }
+
+window._extLocs = {};
+DAYS.forEach(d => d.locations.forEach(l => { window._extLocs[`${d.id}::${l.name}`] = l; }));
+window._xhsLocs = window._extLocs;
+
+function openXhs(key) {
+  const loc = window._extLocs[key]; if(!loc) return false;
+  window.open(IN_APP_WEBVIEW ? xhsWebUrl(loc) : xhsAppUrl(loc));
+  return false;
+}
+
+function locCard(loc, dayIdx) {
+  const dot = loc.type==='food'?'food':loc.type==='spot'?'spot':loc.type==='drink'?'drink':loc.type==='hotel'?'hotel':'transport';
+  const bdg = loc.type==='food'?'<span class="badge food">餐</span>':loc.type==='spot'?'<span class="badge spot">景</span>':loc.type==='drink'?'<span class="badge drink">饮</span>':'';
+  const uid = `d${dayIdx}-${loc.name.replace(/\W/g,'')}`;
+  const locKey = `${dayIdx}::${loc.name}`;
+  const gmapQ = loc.gmap||encodeURIComponent(loc.name+' Melaka');
+  let lnk = `<button class="btn nav" onclick="openAS('${loc.name.replace(/'/g,"\\'")}',${loc.lat},${loc.lng},'${gmapQ}')">📍 导航</button>`;
+  if(loc.xhs||loc.xhsKeyword) {
+    const xhsHref = IN_APP_WEBVIEW ? xhsWebUrl(loc) : xhsAppUrl(loc);
+    const xhsLabel = IN_APP_WEBVIEW ? '📕 小红书' : '📕 小红书 App';
+    lnk += `<a href="${xhsHref}" onclick="return openXhs('${locKey.replace(/'/g,"\\'")}')" class="btn xhs">${xhsLabel}</a>`;
+  }
+  if(loc.reserve) lnk += `<a href="${loc.reserve}" target="_blank" class="btn rsv">📅 预约</a>`;
+  return `<div class="tl-item"><div class="tl-dot ${dot}"></div><div class="card" onclick="if(!event.target.closest('.btn,.links'))toggle('${uid}')"><div class="time">${loc.time!=='—'?loc.time:'备选'}</div><div class="name">${bdg} ${loc.name}</div><div class="desc">${loc.desc}</div>${loc.budget?'<div class="budget">'+loc.budget+'</div>':''}${payChips(loc.pay)}<div class="links">${lnk}</div>${loc.detail?'<div class="details" id="'+uid+'">'+loc.detail.replace(/\n/g,'<br>')+'</div>':''}</div></div>`;
+}
+
+function renderDay(idx) {
+  const d = DAYS.find(x=>x.id===idx); if(!d) return '';
+  const main = d.locations.filter(l=>l.time!=='—');
+  const alt = d.locations.filter(l=>l.time==='—');
+  let h = `<div class="day-head"><h2>${d.title}</h2><p>${d.date}</p></div>`;
+  if(main.length) { h += '<div class="section-head">行程</div><div class="timeline">'; main.forEach(l => h += locCard(l, idx)); h += '</div>'; }
+  if(alt.length) { h += '<div class="section-head">备选</div><div class="timeline">'; alt.forEach(l => h += locCard(l, idx)); h += '</div>'; }
+  return h;
+}
+
+let cur = 0;
+const tabsEl = document.getElementById('tabs');
+const contentEl = document.getElementById('content');
+
+DAYS.forEach(d => {
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (d.id===0?' active':'');
+  btn.dataset.day = d.id;
+  btn.textContent = d.label;
+  tabsEl.appendChild(btn);
+});
+
+function go(idx) {
+  cur = idx;
+  tabsEl.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', +t.dataset.day===idx));
+  contentEl.innerHTML = idx===0 ? overviewContent() : renderDay(idx);
+  showDay(idx);
+  contentEl.scrollTo({top:0});
+  const tab = tabsEl.querySelector(`[data-day="${idx}"]`);
+  if(tab) tab.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+}
+
+function toggle(id) { const el=document.getElementById(id); if(el) el.classList.toggle('closed'); }
+
+tabsEl.addEventListener('click', e => { const t=e.target.closest('.tab'); if(t) go(+t.dataset.day); });
+
+go(0);
+
+/* Action Sheet for Navigation */
+const asOverlay = document.createElement('div');
+asOverlay.className = 'as-overlay';
+asOverlay.innerHTML = `<div class="as-sheet">
+  <div class="as-group" id="as-opts"></div>
+  <div class="as-group"><button class="as-item as-cancel" onclick="closeAS()">取消</button></div>
+</div>`;
+document.body.appendChild(asOverlay);
+asOverlay.addEventListener('click', e => { if (e.target === asOverlay) closeAS(); });
+
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+function amapAppUrl(name, lat, lng) {
+  const scheme = IS_IOS ? 'iosamap' : 'androidamap';
+  return `${scheme}://viewMap?sourceApplication=trip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0`;
+}
+function amapWebUrl(name, lat, lng) {
+  return `https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&src=trip&coordinate=wgs84&callnative=1`;
+}
+function openAmap(name, lat, lng) {
+  if (IN_APP_WEBVIEW) { window.open(amapWebUrl(name, lat, lng)); return; }
+  window.location.href = amapAppUrl(name, lat, lng);
+}
+
+function openAS(name, lat, lng, gmap) {
+  const q = gmap || encodeURIComponent(name + ' Melaka');
+  const encName = encodeURIComponent(name);
+  const safeName = name.replace(/'/g,"\\'");
+  const appleUrl = IN_APP_WEBVIEW
+    ? `https://maps.apple.com/?q=${lat},${lng}&ll=${lat},${lng}&name=${encName}`
+    : `maps://maps.apple.com/?q=${lat},${lng}&name=${encName}`;
+  const googleUrl = `https://www.google.com/maps/search/?api=1&query=${q}`;
+  document.getElementById('as-opts').innerHTML =
+    `<button class="as-item" onclick="window.open('${appleUrl}');closeAS()">🍎 Apple Maps</button>` +
+    `<button class="as-item" onclick="window.open('${googleUrl}');closeAS()">🗺️ Google Maps</button>` +
+    `<button class="as-item" onclick="openAmap('${safeName}',${lat},${lng});closeAS()">🧭 高德地图 App</button>`;
+  asOverlay.classList.add('show');
+}
+function closeAS() { asOverlay.classList.remove('show'); }
+</script>
+</body>
+</html>
