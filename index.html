@@ -238,7 +238,8 @@ const DAYS = [
     id: 2, label: 'D2', date: '8/1 周五', title: '文化深度 · 周五夜市',
     color: '#ff3b30',
     locations: [
-      { name: '🚗 Grab → 鸡场街', lat: 2.1840, lng: 102.2665, type: 'transport', time: '08:40', desc: 'The Lisbon → 鸡场街约3.7km，Grab 15分钟', detail: '🚗 从葡萄牙村 Grab 到鸡场街入口\n🕐 约15分钟，RM10-15\n\nDay 2 全天在 heritage zone 步行，无需再叫车。', gmap: 'The+Lisbon+Melaka+to+Jonker+Street' },
+      { name: '☕ 早餐选项', lat: 2.1840, lng: 102.2665, type: 'food', time: '08:00', desc: '方案A：酒店早餐 MYR 40/人 · 方案B：进城kopitiam', budget: 'RM10-40', detail: '🍳 方案A（推荐）：酒店自助早餐\n- MYR 40/人，7:00-10:00\n- 89%好评，面包现做、水果新鲜\n- 吃饱再进城，省一趟Grab找早餐\n\n☕ 方案B：Grab到鸡场街，Sin See Tai kopi+烤面包+半熟蛋 RM10\n\n💡 推荐A，吃饱了好走路，反正MYR 40不贵', pay: { card: 1, cash: 1 }, gmap: 'The+Lisbon+Melaka+breakfast' },
+      { name: '🚗 Grab → 鸡场街', lat: 2.1840, lng: 102.2665, type: 'transport', time: '08:50', desc: 'The Lisbon → 鸡场街约3.7km，Grab 15分钟', detail: '🚗 从葡萄牙村 Grab 到鸡场街入口\n🕐 约15分钟，RM10-15\n\nDay 2 全天在 heritage zone 步行，无需再叫车。', gmap: 'The+Lisbon+Melaka+to+Jonker+Street' },
       { name: '中华茶室 海南鸡饭粒', lat: 2.1964, lng: 102.2480, type: 'food', time: '09:00', desc: '鸡场街最老字号！鸡汤煮饭粒+白切鸡', budget: '人均 RM15-25', detail: '⚠️ 必须10点前到！售完即止！\n⚠️ 仅周四-六营业（周五刚好开门）\n\n📍 鸡场街入口，三叔公对面\n👍 鸡饭粒用鸡汤煮熟，粒粒饱满\n🕐 约9:30开门，11点卖完\n\n🚶 之后全天步行，各景点间距 3-12 分钟', pay: { cash: 1, alipay: 0.5 }, gmap: 'Chung+Wah+Chicken+Rice+Ball+Melaka', xhsKeyword: '马六甲中华茶室 鸡饭粒' },
       { name: '青云亭 Cheng Hoon Teng', lat: 2.1975, lng: 102.2471, type: 'spot', time: '10:00', desc: '马来西亚最古老华人庙宇，1645年建', detail: '供奉观音，是马六甲华人信仰中心。建筑融合了闽南、佛教和儒家元素，雕梁画栋非常精美。\n\n🎫 免费参观\n🕐 7:00-19:00', gmap: 'Cheng+Hoon+Teng+Temple+Melaka', xhsKeyword: '马六甲青云亭' },
       { name: 'Baba Nyonya 娘惹博物馆', lat: 2.1959, lng: 102.2464, type: 'spot', time: '11:00', desc: '百年娘惹豪宅，了解峇峇娘惹文化的窗口', detail: '曾是富豪郑氏家族的私宅，展示了19世纪峇峇娘惹的奢华生活。家具、瓷器、服饰都极其精美。\n\n🎫 门票约RM18\n🕐 10:00-17:00（周一休息，不影响）', pay: { cash: 1, card: 1 }, gmap: 'Baba+Nyonya+Heritage+Museum+Melaka', xhsKeyword: '马六甲娘惹博物馆 必去' },
@@ -255,7 +256,8 @@ const DAYS = [
     id: 3, label: 'D3', date: '8/2 周六', title: '清真寺 · 夜市巅峰',
     color: '#af52de',
     locations: [
-      { name: '🚗 退房 The Lisbon → 大华酒店', lat: 2.1840, lng: 102.2665, type: 'transport', time: '09:00', desc: '退房 + Grab 约20分钟，RM15-20', detail: '🚗 The Lisbon → 大华约5km，20分钟\n🧳 办好退房叫 Grab\n🏨 到大华寄存行李或 early check-in', gmap: 'The+Lisbon+Melaka+to+Majestic+Malacca' },
+      { name: '🍳 酒店早餐 + 退房', lat: 2.1840, lng: 102.2665, type: 'food', time: '08:00', desc: '自助早餐 MYR 40/人 · 吃饱退房出发', detail: '🍳 The Lisbon 早餐 7:00-10:00\n💰 MYR 40/人\n\n吃饱办好退房，叫 Grab 去大华。\nDay 3 要跑清真寺，吃好一点。', pay: { card: 1, cash: 1 }, gmap: 'The+Lisbon+Melaka+breakfast' },
+      { name: '🚗 退房 The Lisbon → 大华酒店', lat: 2.1840, lng: 102.2665, type: 'transport', time: '08:50', desc: '退房 + Grab 约20分钟，RM15-20', detail: '🚗 The Lisbon → 大华约5km，20分钟\n🧳 办好退房叫 Grab\n🏨 到大华寄存行李或 early check-in', gmap: 'The+Lisbon+Melaka+to+Majestic+Malacca' },
       { name: '🏨 大华酒店 Check-in', lat: 2.2013, lng: 102.2505, type: 'hotel', time: '09:20', desc: '1929年娘惹老宅改造的SLH精品酒店', detail: 'The Majestic Malacca\n📍 188, Jalan Bunga Raya\n\n✨ 亮点：\n- 1929年娘惹豪宅改造，南洋复古风\n- 每个角落都像电影场景\n- 图书馆/英式酒吧仅限住客\n- 早餐Laksa Malacca必试！\n\n⚠️ 老建筑隔音一般，但体验无价', pay: { card: 1, cash: 1 }, gmap: 'The+Majestic+Malacca', xhsKeyword: '马六甲大华酒店 娘惹' },
       { name: '圣方济各教堂', lat: 2.1942, lng: 102.2498, type: 'spot', time: '10:00', desc: '🚶 步行12分钟 · 哥特式双塔，路过拍两张', detail: '建于1849年，纪念圣方济各·沙勿略。\n白色双塔是马六甲天际线的一部分。\n\n🚶 从大华步行约12分钟，途经红屋区。', gmap: 'St+Francis+Xavier+Church+Melaka' },
       { name: '🚗 Grab → 海峡清真寺', lat: 2.1942, lng: 102.2498, type: 'transport', time: '10:20', desc: '圣方济各 → 清真寺约5km，Grab 15分钟', detail: '🚗 从红屋区 Grab 到海峡清真寺\n🕐 约15分钟，RM10-15\n\n💡 上午去人少不晒，拍照光线也好', gmap: 'Dutch+Square+to+Strait+Mosque' },
@@ -316,6 +318,7 @@ function overviewContent() {
 <div class="section-head">🎯 关键提醒</div>
 <div class="pay-summary">
 <h4>📋 提前准备清单</h4>
+✅ Day 2&3 早餐 — The Lisbon 不含早，酒店自助 MYR40/人 或进城kopitiam<br>
 ✅ 中华茶室鸡饭 — <b>9:00前到</b>，售完即止（仅周四-六营业）<br>
 ✅ McQuek's Satay Celup — Day 1晚餐，<b>19:00前到</b>避开高峰<br>
 ✅ 海峡清真寺 — <b>穿长裤/长裙</b>，门口有免费长袍<br>
