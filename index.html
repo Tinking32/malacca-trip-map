@@ -211,7 +211,7 @@ a:hover { text-decoration: underline; }
 <div class="content" id="content"></div>
 
 <script>
-const HOTEL = { name: '希尔顿逸林酒店 (DoubleTree by Hilton Melaka)', lat: 2.1894, lng: 102.2560 };
+const HOTEL = { name: 'The Lisbon Melaka 温德姆臻选酒店', lat: 2.1840, lng: 102.2665 };
 
 const DAYS = [
   { id: 0, label: '总览', color: '#0071e3', locations: [] },
@@ -220,10 +220,10 @@ const DAYS = [
     color: '#ff9500',
     locations: [
       { name: '🚌 新加坡→马六甲', lat: 1.2820, lng: 103.8440, type: 'transport', time: '08:30', desc: '大巴出发，约4.5小时，约13:00到 Melaka Sentral', detail: '💰 大巴票约 SGD25-35\n🕐 车程约4.5h，预计13:00左右抵达\n📍 到达站：Melaka Sentral 巴士总站', gmap: 'Singapore+to+Melaka+bus' },
-      { name: '🚗 Grab → 希尔顿逸林酒店', lat: 2.2210, lng: 102.2507, type: 'transport', time: '13:10', desc: 'Melaka Sentral → 希尔顿，车程约15分钟，RM10-15', detail: '🚗 Grab 从巴士站到酒店约 6km，15分钟\n💰 约 RM10-15\n\n到达 Melaka Sentral 后叫车即可，Grab 在马六甲响应很快。', gmap: 'Melaka+Sentral+to+DoubleTree+Hilton' },
-      { name: '希尔顿逸林酒店 Check-in', lat: 2.1894, lng: 102.2560, type: 'hotel', time: '13:30', desc: '入住两晚，放下行李稍作休整', detail: 'DoubleTree by Hilton Melaka\n位于马六甲南区，近海岸线。\n设施现代，有泳池和健身房。\n距离红屋区约4km（Grab 10分钟）。', gmap: 'DoubleTree+by+Hilton+Melaka' },
-      { name: '🍽️ 麦哥娘惹餐馆 Nyonya Makko', lat: 2.1874, lng: 102.2515, type: 'food', time: '13:50', desc: '🚶 酒店步行8分钟！马六甲风味榜No.5 · 正宗娘惹菜', budget: '人均 RM50-60', detail: '📍 距希尔顿仅645m，走路8分钟\n⭐ Google 5.0 · 马六甲当地风味榜No.5\n\n👍 不用预约，到了就吃！\n👍 正宗娘惹风味，品质口碑不输Nancy\'s\n\n🏆 推荐：娘惹小金杯、黄梨虾、仁当鸡', pay: { cash: 1, card: 1 }, gmap: 'Restoran+Nyonya+Makko+Melaka', xhsKeyword: '马六甲 麦哥娘惹 Nyonya Makko' },
-      { name: '🚗 Grab → 荷兰红屋区', lat: 2.1874, lng: 102.2515, type: 'transport', time: '14:50', desc: '麦哥 → 红屋约4km，Grab 10分钟，RM8-12', detail: '🚗 午饭后 Grab 前往红屋区（Dutch Square）\n🕐 10分钟车程\n💰 约 RM8-12\n\n下午所有景点都在 heritage zone 步行范围内。', gmap: 'Nyonya+Makko+to+Dutch+Square+Melaka' },
+      { name: '🚗 Grab → The Lisbon 温德姆', lat: 2.2210, lng: 102.2507, type: 'transport', time: '13:10', desc: 'Melaka Sentral → 葡萄牙村，约8km，Grab 20分钟', detail: '🚗 从巴士站到 The Lisbon 约 8km，20分钟\n💰 约 RM15-20\n\n酒店位于葡萄牙村海边，地中海风格。\n2025年新开业，白色外墙+蓝色花纹。', gmap: 'Melaka+Sentral+to+The+Lisbon+Melaka' },
+      { name: '🏨 The Lisbon Melaka Check-in', lat: 2.1840, lng: 102.2665, type: 'hotel', time: '13:30', desc: '温德姆臻选 · 地中海风格度假酒店，葡萄牙村海边', detail: 'The Lisbon Melaka, Trademark Collection by Wyndham\n📍 20, Jalan D\'Albuquerque, 葡萄牙村\n🌊 背靠马六甲海峡，度假氛围\n🏊 有海边泳池\n⚠️ 离鸡场街约3.7km，进城需Grab约15分钟\n👍 酒店餐厅（De Lisbon Restaurant）可以吃午餐', gmap: 'The+Lisbon+Melaka+Wyndham' },
+      { name: '🍽️ De Lisbon 酒店餐厅午餐', lat: 2.1840, lng: 102.2665, type: 'food', time: '13:45', desc: '酒店内餐厅，1982年老字号葡式料理，到了就吃', budget: '人均 RM30-50', detail: '📍 就在酒店内，不用出门\n⭐ 1982年开业的老字号\n👍 葡式苏东、烤茄子、江鱼仔薯条\n\n💡 葡萄牙村海鲜大排档中午不开（只做晚市），酒店餐厅是最方便的选择。吃完直接开始下午行程。', pay: { cash: 1, card: 1 }, gmap: 'De+Lisbon+Restaurant+Melaka' },
+      { name: '🚗 Grab → 荷兰红屋区', lat: 2.1840, lng: 102.2665, type: 'transport', time: '14:40', desc: 'The Lisbon → 红屋约3.7km，Grab 15分钟，RM10-15', detail: '🚗 从葡萄牙村 Grab 前往红屋区（Dutch Square）\n🕐 约15分钟\n💰 约 RM10-15\n\n下午所有景点都在 heritage zone 步行范围内。', gmap: 'The+Lisbon+Melaka+to+Dutch+Square' },
       { name: '荷兰红屋 Stadthuys', lat: 2.1940, lng: 102.2489, type: 'spot', time: '15:00', desc: '马六甲地标，荷兰殖民时期市政厅，鲜艳的赭红色外墙', detail: '建于1650年，是东南亚最古老的荷兰建筑。现为历史博物馆。\n\n📸 最佳拍照点在对面红场广场。\n🎫 门票约RM10\n🚶 与喷泉、圣保罗山、古城门全部步行可达', gmap: 'Stadthuys+Melaka', xhsKeyword: '马六甲荷兰红屋 拍照' },
       { name: '维多利亚女皇喷泉', lat: 2.1941, lng: 102.2491, type: 'spot', time: '15:00', desc: '英殖民时期的纪念喷泉，就在红屋正前方', detail: '1904年建成，纪念维多利亚女王登基60周年。红场的地标性点缀。', gmap: 'Queen+Victoria+Fountain+Melaka' },
       { name: '圣保罗山教堂 St. Paul\'s Church', lat: 2.1927, lng: 102.2494, type: 'spot', time: '15:30', desc: '山顶遗迹教堂，俯瞰马六甲海峡全景', detail: '建于1521年的葡萄牙教堂遗址，圣方济各·沙勿略曾在此传教。\n\n⛰️ 需爬一小段台阶上山，约10分钟。\n🌅 黄昏时分可看海峡日落，超美！', gmap: 'St+Pauls+Church+Melaka', xhsKeyword: '马六甲圣保罗山 日落' },
@@ -238,7 +238,7 @@ const DAYS = [
     id: 2, label: 'D2', date: '8/1 周五', title: '文化深度 · 周五夜市',
     color: '#ff3b30',
     locations: [
-      { name: '🚗 Grab → 鸡场街', lat: 2.1894, lng: 102.2560, type: 'transport', time: '08:40', desc: '希尔顿 → 鸡场街约4km，Grab 10分钟', detail: '🚗 从希尔顿 Grab 到鸡场街入口\n🕐 约10分钟，RM8-12\n\nDay 2 全天在 heritage zone 步行，无需再叫车。', gmap: 'DoubleTree+Hilton+to+Jonker+Street' },
+      { name: '🚗 Grab → 鸡场街', lat: 2.1840, lng: 102.2665, type: 'transport', time: '08:40', desc: 'The Lisbon → 鸡场街约3.7km，Grab 15分钟', detail: '🚗 从葡萄牙村 Grab 到鸡场街入口\n🕐 约15分钟，RM10-15\n\nDay 2 全天在 heritage zone 步行，无需再叫车。', gmap: 'The+Lisbon+Melaka+to+Jonker+Street' },
       { name: '中华茶室 海南鸡饭粒', lat: 2.1964, lng: 102.2480, type: 'food', time: '09:00', desc: '鸡场街最老字号！鸡汤煮饭粒+白切鸡', budget: '人均 RM15-25', detail: '⚠️ 必须10点前到！售完即止！\n⚠️ 仅周四-六营业（周五刚好开门）\n\n📍 鸡场街入口，三叔公对面\n👍 鸡饭粒用鸡汤煮熟，粒粒饱满\n🕐 约9:30开门，11点卖完\n\n🚶 之后全天步行，各景点间距 3-12 分钟', pay: { cash: 1, alipay: 0.5 }, gmap: 'Chung+Wah+Chicken+Rice+Ball+Melaka', xhsKeyword: '马六甲中华茶室 鸡饭粒' },
       { name: '青云亭 Cheng Hoon Teng', lat: 2.1975, lng: 102.2471, type: 'spot', time: '10:00', desc: '马来西亚最古老华人庙宇，1645年建', detail: '供奉观音，是马六甲华人信仰中心。建筑融合了闽南、佛教和儒家元素，雕梁画栋非常精美。\n\n🎫 免费参观\n🕐 7:00-19:00', gmap: 'Cheng+Hoon+Teng+Temple+Melaka', xhsKeyword: '马六甲青云亭' },
       { name: 'Baba Nyonya 娘惹博物馆', lat: 2.1959, lng: 102.2464, type: 'spot', time: '11:00', desc: '百年娘惹豪宅，了解峇峇娘惹文化的窗口', detail: '曾是富豪郑氏家族的私宅，展示了19世纪峇峇娘惹的奢华生活。家具、瓷器、服饰都极其精美。\n\n🎫 门票约RM18\n🕐 10:00-17:00（周一休息，不影响）', pay: { cash: 1, card: 1 }, gmap: 'Baba+Nyonya+Heritage+Museum+Melaka', xhsKeyword: '马六甲娘惹博物馆 必去' },
@@ -255,7 +255,7 @@ const DAYS = [
     id: 3, label: 'D3', date: '8/2 周六', title: '清真寺 · 夜市巅峰',
     color: '#af52de',
     locations: [
-      { name: '🚗 退房希尔顿 → 大华酒店', lat: 2.1894, lng: 102.2560, type: 'transport', time: '09:00', desc: '退房 + Grab 约15分钟，RM10-15', detail: '🚗 希尔顿 → 大华约4.5km，15分钟\n🧳 办好退房叫 Grab\n🏨 到大华寄存行李或 early check-in', gmap: 'DoubleTree+to+Majestic+Malacca' },
+      { name: '🚗 退房 The Lisbon → 大华酒店', lat: 2.1840, lng: 102.2665, type: 'transport', time: '09:00', desc: '退房 + Grab 约20分钟，RM15-20', detail: '🚗 The Lisbon → 大华约5km，20分钟\n🧳 办好退房叫 Grab\n🏨 到大华寄存行李或 early check-in', gmap: 'The+Lisbon+Melaka+to+Majestic+Malacca' },
       { name: '🏨 大华酒店 Check-in', lat: 2.2013, lng: 102.2505, type: 'hotel', time: '09:20', desc: '1929年娘惹老宅改造的SLH精品酒店', detail: 'The Majestic Malacca\n📍 188, Jalan Bunga Raya\n\n✨ 亮点：\n- 1929年娘惹豪宅改造，南洋复古风\n- 每个角落都像电影场景\n- 图书馆/英式酒吧仅限住客\n- 早餐Laksa Malacca必试！\n\n⚠️ 老建筑隔音一般，但体验无价', pay: { card: 1, cash: 1 }, gmap: 'The+Majestic+Malacca', xhsKeyword: '马六甲大华酒店 娘惹' },
       { name: '圣方济各教堂', lat: 2.1942, lng: 102.2498, type: 'spot', time: '10:00', desc: '🚶 步行12分钟 · 哥特式双塔，路过拍两张', detail: '建于1849年，纪念圣方济各·沙勿略。\n白色双塔是马六甲天际线的一部分。\n\n🚶 从大华步行约12分钟，途经红屋区。', gmap: 'St+Francis+Xavier+Church+Melaka' },
       { name: '🚗 Grab → 海峡清真寺', lat: 2.1942, lng: 102.2498, type: 'transport', time: '10:20', desc: '圣方济各 → 清真寺约5km，Grab 15分钟', detail: '🚗 从红屋区 Grab 到海峡清真寺\n🕐 约15分钟，RM10-15\n\n💡 上午去人少不晒，拍照光线也好', gmap: 'Dutch+Square+to+Strait+Mosque' },
@@ -288,7 +288,7 @@ function overviewContent() {
   return `
 <div class="hero"><h1>马六甲 4天3晚 · 南洋旧梦</h1><p class="subtitle">2025年7月31日—8月3日 · 新加坡 ⇄ 马六甲</p></div>
 <div class="info-grid">
-  <div class="info-card"><div class="label">酒店</div><div class="value">希尔顿逸林 (2晚)<br>大华酒店 (1晚)</div></div>
+  <div class="info-card"><div class="label">酒店</div><div class="value">温德姆 Lisbon (2晚)<br>大华酒店 (1晚)</div></div>
   <div class="info-card"><div class="label">交通</div><div class="value">🚌 大巴往返<br>新加坡⇄马六甲</div></div>
   <div class="info-card"><div class="label">市内出行</div><div class="value">🚗 Grab ~10趟<br>合计约 RM80-120</div></div>
   <div class="info-card"><div class="label">预算参考</div><div class="value">RM300-500/人<br>饮食+门票+Grab</div></div>
@@ -299,7 +299,7 @@ function overviewContent() {
 <div class="pay-summary"><h4>💡 马六甲支付须知</h4>
 <span class="warn">⚠️ 大部分小吃摊和传统老店只收现金</span>，请备足马币(RM)<br>
 <span class="ok-text">✅ 商场、酒店、连锁店可刷卡</span><br>
-<span class="ok-text">✅ 部分网红店支持支付宝</span>（Nadeje、麦哥娘惹等）<br>
+<span class="ok-text">✅ 部分网红店支持支付宝</span>（Nadeje等）<br>
 建议在出发前换 RM500-800 现金，或在马六甲 ATM 取款
 </div>
 <div class="section-head">🌧️ 天气提醒</div>
@@ -329,8 +329,8 @@ function overviewContent() {
   <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥇 McQuek's Satay Celup</div><div class="desc">95年老字号 · 花生酱浓郁绝了 · 4pm开门就去</div></div>
   <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥈 Nadeje 千层蛋糕</div><div class="desc">比Lady M好吃 · 原味必点 · 下午茶首选</div></div>
   <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>🥉 中华茶室海南鸡饭粒</div><div class="desc">马六甲第一站 · 鸡汤煮饭粒 · 10点前到</div></div>
-  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>④ 麦哥娘惹餐馆 Nyonya Makko</div><div class="desc">到埠第一餐 · 酒店步行8分钟 · 5.0评分娘惹菜</div></div>
-  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>⑤ Klebang Coconut Shake</div><div class="desc">真材实料椰子冰沙 · 顺路必喝 · RM5解暑</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>④ De Lisbon 葡式料理</div><div class="desc">酒店内1982年老字号 · 葡萄牙村 · 到埠第一餐</div></div>
+  <div class="card"><div class="name"><span class="dot" style="background:var(--tint-red)"></span>⑤ Geographér Café 地理学家</div><div class="desc">200年老屋·周五live驻唱·《夏日么么茶》取景地</div></div>
 </div>
 <div class="section-head">图例</div>
 <div class="legend">
